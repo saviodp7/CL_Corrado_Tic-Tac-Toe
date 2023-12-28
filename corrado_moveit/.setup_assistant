@@ -1,0 +1,11 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: corrado_description
+    relative_path: urdf/corrado.xacro
+    xacro_args: ""
+  SRDF:
+    relative_path: config/corrado.srdf
+  CONFIG:
+    author_name: S. Del Peschio
+    author_email: saviodp7@gmail.com
+    generated_timestamp: 1703708696
