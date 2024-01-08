@@ -66,7 +66,7 @@ class MoveGroupPythonInterface(object):
         ## arm planning group.
         ## This interface can be used to plan and execute motions:
         group_name = "corrado_group"
-        move_group = moveit_commander.MoveGroupCommander(group_name)
+        move_group = moveit_commander.MoveGroupCommander(group_name, wait_for_servers=60.0)
 
         ## Create a `DisplayTrajectory`_ ROS publisher which is used to display
         ## trajectories in Rviz:

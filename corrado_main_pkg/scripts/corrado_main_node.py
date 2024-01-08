@@ -6,12 +6,12 @@ from CorradoTrajectoryController import CorradoTrajectoryController
 
 def main():
     rospy.init_node('corrado_main_node', anonymous=True)
-    print("hello node!")
 
     corrado_controller = CorradoTrajectoryController()
     corrado_controller.homing()
-    for i in range(9):
-        corrado_controller.draw_circle(i)
+    corrado_controller.draw_point(4)
+    #for i in range(9):
+    #corrado_controller.draw_x(4)
 
     # rate = rospy.Rate(10) # 10hz
     # while not rospy.is_shutdown():
