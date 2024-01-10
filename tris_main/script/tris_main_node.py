@@ -15,7 +15,7 @@ def main():
     rospy.init_node("game_node", anonymous=True)
     rate = rospy.Rate(0.5) #Hz
 
-    mossa_corrado_pub = rospy.Publisher('mossa', Int8, queue_size=1)
+    mossa_corrado_pub = rospy.Publisher('cmd_move', Int8, queue_size=1)
     rospy.Subscriber('best_move', BestMove, callback)
 
     while not rospy.is_shutdown(): 
