@@ -19,12 +19,12 @@ class ServoDriver(object):
         self.pca=PCA9685(i2c)
         self.pca.frequency=servo_freq
         self.servo_list=[]
-        self.servo_list.append(servo.Servo(self.pca.channels[0],min_pulse=700,max_pulse=2700))
-        self.servo_list.append(servo.Servo(self.pca.channels[1],min_pulse=600,max_pulse=2500))
-        self.servo_list.append(servo.Servo(self.pca.channels[2],min_pulse=600,max_pulse=2500))
+        self.servo_list.append(servo.Servo(self.pca.channels[0],min_pulse=650,max_pulse=2650))
+        self.servo_list.append(servo.Servo(self.pca.channels[1],min_pulse=550,max_pulse=2600))
+        self.servo_list.append(servo.Servo(self.pca.channels[2],min_pulse=600,max_pulse=2600))
         self.servo_list.append(servo.Servo(self.pca.channels[3],min_pulse=400,max_pulse=2400))
-        self.servo_list.append(servo.Servo(self.pca.channels[4],min_pulse=450,max_pulse=2400))
-        self.servo_list.append(servo.Servo(self.pca.channels[5],min_pulse=450,max_pulse=2425))
+        self.servo_list.append(servo.Servo(self.pca.channels[4],min_pulse=700,max_pulse=2850))
+        self.servo_list.append(servo.Servo(self.pca.channels[5],min_pulse=520,max_pulse=2450))
         
 
     def write_position(self, theta):

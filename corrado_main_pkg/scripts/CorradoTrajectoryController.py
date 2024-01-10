@@ -15,14 +15,14 @@ class CorradoTrajectoryController(object):
         self.corrado_move_group = MoveGroupPythonInterface()
         self.driver_controller = ServoDriver(n_joints=6, servo_freq=50)
 
-        self.CELL_WIDTH = 0.04
-        self.cell_center3d = Vector(0.0, 0.21, 0.030)
+        self.CELL_WIDTH = 0.065
+        self.cell_center3d = Vector(0.0, 0.21, 0.065)
 
-        self.home_position = [0.0, 0.15, 0.125]
+        self.home_position = [0.15, 0.15, 0.125]
         self.cell_centers3d = list()
         self.cell_centers_init()
-        self.up_trasl3d = Vector(0.0, 0.0, 0.03)
-        self.radius = 0.04
+        self.up_trasl3d = Vector(0.0, 0.0, 0.05)
+        self.radius = 0.02
 
     def add_waypoint(self, waypoints_list, points3d):
         wpose = self.corrado_move_group.move_group.get_current_pose().pose
@@ -120,7 +120,7 @@ class CorradoTrajectoryController(object):
         start_position = Vector(wpose.position.x, wpose.position.y, wpose.position.z)
         self.add_waypoint(waypoints, [start_position])
 
-        number_waypoints = 100
+        number_waypoints = 25
         for i in range(number_waypoints+1):
             waypoint_x = center3d.x + self.radius*cos(i/number_waypoints*2*pi)
             waypoint_y = center3d.y + self.radius*sin(i/number_waypoints*2*pi)
