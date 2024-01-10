@@ -3,15 +3,17 @@ import rospy
 
 import cv2
 import os
-import time
 
 from grid import find_game_grid, print_board, find_color
-from setting import X_SYM, O_SYM
+import setting
 from MinMaxSolver import MinMaxSolver
 from LetterRecognition import LetterRecognition
+from corrado_camera.msg import BestMove
 
 def main():
     rospy.init_node("corrado_camera_node", anonymous=True)
+    best_move_pub = rospy.Publisher('best_move', BestMove, queue_size=1)
+    best_move_msg = BestMove()
 
     # Inizializza la webcam
     cap = cv2.VideoCapture(0)
@@ -27,8 +29,8 @@ def main():
     letter_recog = LetterRecognition(full_path)
 
     # Gestione campionamento
-    rate = rospy.Rate(2) # 2Hz
-    accuracy_count = 0
+    rate = rospy.Rate(5) # 2Hz
+    acc_score = 0
     prec_config = [0, 0, 0, 0, 0, 0, 0, 0, 0]
     solver = MinMaxSolver()
 
@@ -36,13 +38,13 @@ def main():
 
         config = [0, 0, 0, 0, 0, 0, 0, 0, 0]
         ret, frame = cap.read()
+        cv2.rectangle(frame, (setting.roi_x, setting.roi_y), (setting.roi_x+setting.roi_width, setting.roi_y+setting.roi_height), color=(255, 0, 0), thickness=2)
         threshold = cv2.getTrackbarPos("threshold", "mask")
         kernel_dim = cv2.getTrackbarPos("kernel_dim", "mask")
 
         try:
             # Trova e disegna la griglia del tris
             grid_frame, thresholded, corners = find_game_grid(frame, threshold, kernel_dim)
-
             for index, cell in enumerate(corners):
                 extracted_frame = grid_frame[cell[0][1]:cell[1][1], cell[0][0]:cell[1][0]]
                 (h, w) = extracted_frame.shape[:2]
@@ -51,11 +53,11 @@ def main():
                     # Utilizza la classe per riconoscere le lettere
                     recognized_letter = letter_recog.recognize_letter("frame_estratto.jpg")
                     if recognized_letter == 'х':
-                        config[index] = X_SYM
+                        config[index] = setting.X_SYM
                         cv2.line(extracted_frame, (10, 10), (h-10, h-10), (0, 0, 255), 2)
                         cv2.line(extracted_frame, (10, h-10), (h-10, 10), (0, 0, 255), 2)
                     elif recognized_letter == 'о':
-                        config[index] = O_SYM
+                        config[index] = setting.O_SYM
                         cv2.circle(extracted_frame, (w//2, h//2), 22, (0, 0, 255), 2)
                 else:
                     config[index] = 0
@@ -63,22 +65,27 @@ def main():
             pass
 
         # Mostra il frame elaborato
-        cv2.imshow("config", frame) #grid_frame
+        cv2.imshow("config", frame)
         # DEBUG
         cv2.imshow("mask", thresholded)
 
         # Assicuriamoci dell'accuratezza della rilevazione
         if config == prec_config:
-            accuracy_count += 1
+            acc_score += 1
         else:
-            accuracy_count = 0
+            acc_score = 0
         prec_config = config
 
         # Stampo la mossa migliore
-        if accuracy_count > 10:
-            print_board(config)
+        if acc_score > 10:
             solver.set_config(config)
-            print("La mossa ottima è: ", solver.find_best_move())
+            best_move = solver.find_best_move()
+            best_move_msg.header.stamp = rospy.Time.now()
+            best_move_msg.mossa = best_move
+            best_move_msg.score = acc_score
+            best_move_pub.publish(best_move_msg)
+
+
 
 
         if cv2.waitKey(1) & 0xFF == 27:  # Esc per uscire
