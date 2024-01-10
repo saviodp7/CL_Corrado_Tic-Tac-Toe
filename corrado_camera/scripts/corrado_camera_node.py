@@ -17,8 +17,11 @@ def main():
 
     # Inizializza la webcam
     cap = cv2.VideoCapture(0)
-    cv2.namedWindow("config", cv2.WINDOW_NORMAL)
-    cv2.namedWindow("mask", cv2.WINDOW_NORMAL)
+    #cap.set(cv2.CAP_PROP_FOURCC,cv2.VideoWriter_fourcc('M','J','P','G'))
+    #cap.set(cv2.CAP_PROP_FRAME_WIDTH,320)  
+    #cap.set(cv2.CAP_PROP_FRAME_HEIGHT,240) 
+    cv2.namedWindow("config",cv2.WINDOW_NORMAL)
+    cv2.namedWindow("mask",cv2.WINDOW_NORMAL)
     cv2.createTrackbar("threshold", "mask", 77, 255, lambda x: None)
     cv2.createTrackbar("kernel_dim", "mask", 10, 15, lambda x: None)
 
@@ -29,7 +32,7 @@ def main():
     letter_recog = LetterRecognition(full_path)
 
     # Gestione campionamento
-    rate = rospy.Rate(5) # 2Hz
+    rate = rospy.Rate(5) #Hz
     acc_score = 0
     prec_config = [0, 0, 0, 0, 0, 0, 0, 0, 0]
     solver = MinMaxSolver()
@@ -38,7 +41,7 @@ def main():
 
         config = [0, 0, 0, 0, 0, 0, 0, 0, 0]
         ret, frame = cap.read()
-        cv2.rectangle(frame, (setting.roi_x, setting.roi_y), (setting.roi_x+setting.roi_width, setting.roi_y+setting.roi_height), color=(255, 0, 0), thickness=2)
+        frame=cv2.resize(frame,(320, 240))
         threshold = cv2.getTrackbarPos("threshold", "mask")
         kernel_dim = cv2.getTrackbarPos("kernel_dim", "mask")
 
@@ -62,10 +65,11 @@ def main():
                 else:
                     config[index] = 0
         except TypeError:
-            pass
+            rospy.logerr("errore")
 
+        cv2.rectangle(frame, (setting.roi_x, setting.roi_y), (setting.roi_x+setting.roi_width, setting.roi_y+setting.roi_height), color=(255, 0, 0), thickness=2)
         # Mostra il frame elaborato
-        cv2.imshow("config", frame)
+        cv2.imshow("config", grid_frame)
         # DEBUG
         cv2.imshow("mask", thresholded)
 

@@ -65,8 +65,8 @@ def find_corners(contours, hiers):
     return corners
 
 def find_color(frame):
-    lower_color = np.array([127, 10, 135])  # Valori HSV minimi per il rosso
-    upper_color = np.array([180, 49, 175])  # Valori HSV massimi per il rosso
+    lower_color = np.array([0, 44, 110])  # Valori HSV minimi per il rosso
+    upper_color = np.array([7, 157, 151])  # Valori HSV massimi per il rosso
 
     # Converte l'immagine in spazio dei colori BGR in HSV
     hsv_cell = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
