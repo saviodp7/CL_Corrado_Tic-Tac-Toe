@@ -5,7 +5,7 @@ import cv2
 import os
 import time
 
-from grid import find_game_grid, find_color
+from grid import find_game_grid, find_color, debug_image
 import setting
 from MinMaxSolver import MinMaxSolver
 from LetterRecognition import LetterRecognition
@@ -17,7 +17,9 @@ def main():
     best_move_msg = BestMove()
 
     # Inizializza la webcam
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(1)
+    if not cap.isOpened():
+        rospy.logerr("Impossibile inizializzare camera!")
     cv2.namedWindow("frame", cv2.WINDOW_NORMAL)
     cv2.namedWindow("mask", cv2.WINDOW_NORMAL)
     cv2.createTrackbar("threshold", "mask", 120, 255, lambda x: None)
@@ -30,21 +32,20 @@ def main():
     letter_recog = LetterRecognition(full_path)
 
     # Gestione campionamento
-    rate = rospy.Rate(5) #Hz
+    rate = rospy.Rate(10) #Hz
     acc_score = 0
     prec_config = [0, 0, 0, 0, 0, 0, 0, 0, 0]
     solver = MinMaxSolver()
     solved = False
-
-    prec_inizio = time.time()
-    prec_exec = time.time()
 
     while not rospy.is_shutdown():
 
         config = [0, 0, 0, 0, 0, 0, 0, 0, 0]
 
         ret, frame = cap.read()
-        frame = cv2.resize(frame, (640, 480))
+        if not ret:
+            rospy.logerr("Impossibile leggere immagine dalla camera!")
+        frame = cv2.resize(frame, (1280, 960))
         display_frame = frame.copy()
         threshold = cv2.getTrackbarPos("threshold", "mask")
         kernel_dim = cv2.getTrackbarPos("kernel_dim", "mask")
@@ -97,15 +98,17 @@ def main():
                 best_move_msg.score = acc_score
                 best_move_pub.publish(best_move_msg)
             if solved:
-                print("sto printando")
-                cv2.line(display_frame, (
-                setting.roi_x + corners[best_move][0][0] + 10, setting.roi_y + corners[best_move][0][1] + 10),
-                         (setting.roi_x + corners[best_move][1][0] - 10,
-                          setting.roi_y + corners[best_move][1][1] + -10), (255, 0,), 2)
-                cv2.line(display_frame, (
-                setting.roi_x + corners[best_move][0][0] + w - 10, setting.roi_y + corners[best_move][0][1] + 10),
-                         (setting.roi_x + corners[best_move][1][0] - w + 10,
-                          setting.roi_y + corners[best_move][1][1] - 10), (255, 0,), 2)
+                try:
+                    cv2.line(display_frame, (
+                    setting.roi_x + corners[best_move][0][0] + 10, setting.roi_y + corners[best_move][0][1] + 10),
+                             (setting.roi_x + corners[best_move][1][0] - 10,
+                              setting.roi_y + corners[best_move][1][1] + -10), (255, 0,), 2)
+                    cv2.line(display_frame, (
+                    setting.roi_x + corners[best_move][0][0] + w - 10, setting.roi_y + corners[best_move][0][1] + 10),
+                             (setting.roi_x + corners[best_move][1][0] - w + 10,
+                              setting.roi_y + corners[best_move][1][1] - 10), (255, 0,), 2)
+                except IndexError:
+                    pass
         else:
             acc_score = 0
             solved = False
@@ -117,6 +120,10 @@ def main():
         cv2.imshow("frame", display_frame)
         # DEBUG calibrazione threshold
         cv2.imshow("mask", thresholded)
+        debug_image(grid_frame)
+
+        if cv2.waitKey(1) & 0xFF == 27:  # Esc per uscire
+            break
 
         rate.sleep()
 

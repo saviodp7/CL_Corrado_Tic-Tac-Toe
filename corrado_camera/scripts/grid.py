@@ -79,3 +79,15 @@ def print_board(config):
         if config[i] == X_SYM:
             print("X ", end=" ")
     print("\n")
+
+def debug_image(frame):
+    debug_frame = frame.copy()
+    lower_color = np.array([0, 25, 99])  # Valori HSV minimi per il rosso
+    upper_color = np.array([180, 255, 255])  # Valori HSV massimi per il rosso
+    # Converte l'immagine in spazio dei colori BGR in HSV
+    hsv_cell = cv2.cvtColor(debug_frame, cv2.COLOR_BGR2HSV)
+    # Crea una maschera per il colore desiderato (rosso)
+    debug_mask = cv2.inRange(hsv_cell, lower_color, upper_color)
+    cv2.namedWindow("debug", cv2.WINDOW_NORMAL)
+    cv2.imshow("debug", debug_mask)
+
