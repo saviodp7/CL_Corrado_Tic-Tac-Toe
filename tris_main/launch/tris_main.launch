@@ -1,0 +1,9 @@
+<launch>
+
+    <node name="corrado_camera_node" pkg="corrado_camera" type="corrado_camera_node.py" output="screen"/>
+
+    <node name="tris_main_node" pkg="tris_main" type="tris_main_node.py" output="screen"/>
+
+    <node name="corrado_main_node" pkg="corrado_main_pkg" type="corrado_main_node.py"/>
+
+</launch>
