@@ -1,8 +1,8 @@
 # ROI SETTING
-roi_x = 120  # Coordinata X iniziale
-roi_y = 40  # Coordinata Y iniziale
-roi_width = 100  # Larghezza
-roi_height = 125  # Altezza
+roi_x = 220  # Coordinata X iniziale
+roi_y = 60  # Coordinata Y iniziale
+roi_width = 255  # Larghezza
+roi_height = 250  # Altezza
 
 # SYMBOLS
 X_SYM = 1
