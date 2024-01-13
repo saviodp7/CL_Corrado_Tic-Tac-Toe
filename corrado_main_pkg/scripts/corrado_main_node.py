@@ -8,14 +8,15 @@ corrado_controller = CorradoTrajectoryController()
 
 def callback(cmd_move):
     global corrado_controller
-    corrado_controller.draw_x(cmd_move)
-    rospy.loginfo(f"\nEseguo la mossa {cmd_move}")
+    corrado_controller.draw_x(cmd_move.data)
+    rospy.loginfo(f"Eseguo la mossa {cmd_move}")
 
 def main():
     rospy.init_node('corrado_main_node', anonymous=True)
     rospy.Subscriber('cmd_move', Int8, callback)
 
     corrado_controller.homing()
+    corrado_controller.draw_x(7)
 
     rospy.spin()
 

@@ -9,7 +9,7 @@ mossa = None
 def callback(best_move_msg):
     global mossa
     mossa = best_move_msg.mossa
-    rospy.loginfo(f"\nMossa migliore: {best_move_msg.mossa}, score: {best_move_msg.score}")
+    rospy.loginfo(f"Mossa migliore: {best_move_msg.mossa}, score: {best_move_msg.score}")
 
 def main():
     rospy.init_node("game_node", anonymous=True)

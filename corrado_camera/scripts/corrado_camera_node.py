@@ -17,12 +17,12 @@ def main():
     best_move_msg = BestMove()
 
     # Inizializza la webcam
-    cap = cv2.VideoCapture(1)
+    cap = cv2.VideoCapture(0)
     if not cap.isOpened():
         rospy.logerr("Impossibile inizializzare camera!")
     cv2.namedWindow("frame", cv2.WINDOW_NORMAL)
     cv2.namedWindow("mask", cv2.WINDOW_NORMAL)
-    cv2.createTrackbar("threshold", "mask", 120, 255, lambda x: None)
+    cv2.createTrackbar("threshold", "mask", 90, 255, lambda x: None)
     cv2.createTrackbar("kernel_dim", "mask", 7, 15, lambda x: None)
 
     # Crea un'istanza della classe con il percorso dei pesi del modello
@@ -32,7 +32,7 @@ def main():
     letter_recog = LetterRecognition(full_path)
 
     # Gestione campionamento
-    rate = rospy.Rate(10) #Hz
+    rate = rospy.Rate(2) #Hz
     acc_score = 0
     prec_config = [0, 0, 0, 0, 0, 0, 0, 0, 0]
     solver = MinMaxSolver()
@@ -45,7 +45,8 @@ def main():
         ret, frame = cap.read()
         if not ret:
             rospy.logerr("Impossibile leggere immagine dalla camera!")
-        frame = cv2.resize(frame, (1280, 960))
+        frame = cv2.rotate(frame, cv2.ROTATE_180)
+        frame = cv2.resize(frame, (640, 480))
         display_frame = frame.copy()
         threshold = cv2.getTrackbarPos("threshold", "mask")
         kernel_dim = cv2.getTrackbarPos("kernel_dim", "mask")
@@ -120,7 +121,7 @@ def main():
         cv2.imshow("frame", display_frame)
         # DEBUG calibrazione threshold
         cv2.imshow("mask", thresholded)
-        debug_image(grid_frame)
+        #debug_image(grid_frame)
 
         if cv2.waitKey(1) & 0xFF == 27:  # Esc per uscire
             break
