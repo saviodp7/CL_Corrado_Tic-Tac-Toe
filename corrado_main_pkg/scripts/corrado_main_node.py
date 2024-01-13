@@ -10,6 +10,12 @@ def callback(cmd_move):
     global corrado_controller
     corrado_controller.draw_x(cmd_move.data)
     rospy.loginfo(f"Eseguo la mossa {cmd_move}")
+    if cmd_move.data == 12:
+        corrado_controller.calib_traj()
+    else:
+        corrado_controller.draw_x(cmd_move.data)
+        rospy.loginfo(f"\nEseguo la mossa {cmd_move}")
+
 
 def main():
     rospy.init_node('corrado_main_node', anonymous=True)

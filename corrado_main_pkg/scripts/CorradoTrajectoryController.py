@@ -136,3 +136,6 @@ class CorradoTrajectoryController(object):
         #self.corrado_move_group.execute_plan(plan)
         self.execute_plan(plan)
 
+    def calib_traj(self):
+        for index in range(9):
+            self.draw_point(index)
