@@ -10,7 +10,7 @@ class LetterRecognition:
 
     def __init__(self, model_weights_path):
         self.model = self.load_model(model_weights_path)
-        self.letters = 'ох'
+        self.letters = 'охдк'
 
     def load_model(self, model_weights_path):
         model = self.CNN_model()
@@ -28,8 +28,8 @@ class LetterRecognition:
         # 3 stands for RGB images, 1 if greyscaled images
         INPUT_SHAPE = (IMG_ROWS, IMG_COLS, 3)
         # Number of classes to consider
-        NUM_CLASSES = 2
-        letters = 'ох'
+        NUM_CLASSES = 4
+        letters = 'охдк'
 
         model = Sequential()
         model.add(Conv2D(32, kernel_size=(3, 3),

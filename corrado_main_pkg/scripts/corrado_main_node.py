@@ -8,13 +8,14 @@ corrado_controller = CorradoTrajectoryController()
 
 def callback(cmd_move):
     global corrado_controller
-    corrado_controller.draw_x(cmd_move.data)
-    rospy.loginfo(f"Eseguo la mossa {cmd_move}")
     if cmd_move.data == 12:
         corrado_controller.calib_traj()
+    elif cmd_move.data == 13:
+        for i in range(9):
+            corrado_controller.draw_x(i)
     else:
         corrado_controller.draw_x(cmd_move.data)
-        rospy.loginfo(f"\nEseguo la mossa {cmd_move}")
+        rospy.loginfo(f"Eseguo la mossa {cmd_move.data}")
 
 
 def main():
@@ -22,7 +23,6 @@ def main():
     rospy.Subscriber('cmd_move', Int8, callback)
 
     corrado_controller.homing()
-    corrado_controller.draw_x(7)
 
     rospy.spin()
 

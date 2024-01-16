@@ -15,9 +15,9 @@ class CorradoTrajectoryController(object):
         self.corrado_move_group = MoveGroupPythonInterface()
         self.driver_controller = ServoDriver(n_joints=6, servo_freq=50)
 
-        self.CELL_WIDTH = 0.06
-        self.grid_center3d = Vector(0.0, 0.21, 0.06)
-        self.home_position = Vector(0.15, 0.10, 0.125)
+        self.CELL_WIDTH = 0.055
+        self.grid_center3d = Vector(0.0, 0.20, 0.065) 
+        self.home_position = Vector(0.15, 0.15, 0.14)
         self.cell_centers3d = list()
         self.cell_centers_init()
         self.up_trasl3d = Vector(0.0, 0.0, 0.05)
@@ -62,6 +62,8 @@ class CorradoTrajectoryController(object):
         waypoints = list()
         self.add_waypoint(waypoints, [self.home_position])
         plan, _ = self.corrado_move_group.plan_cartesian_path(waypoints)
+        #self.corrado_move_group.display_trajectory(plan)
+        self.corrado_move_group.execute_plan(plan)
         self.execute_plan(plan)
 
 
@@ -69,17 +71,14 @@ class CorradoTrajectoryController(object):
         point3d = self.cell_centers3d[cell_index]
         waypoints = list()
 
-        wpose = self.corrado_move_group.move_group.get_current_pose().pose
-        start_position = Vector(wpose.position.x, wpose.position.y, wpose.position.z)
-
-        self.add_waypoint(waypoints, [start_position])
+        self.add_waypoint(waypoints, [self.home_position])
         self.add_waypoint(waypoints, [point3d, self.up_trasl3d])
         self.add_waypoint(waypoints, [point3d])
         self.add_waypoint(waypoints, [point3d, self.up_trasl3d])
-        self.add_waypoint(waypoints, [start_position])
+        self.add_waypoint(waypoints, [self.home_position])
 
         plan, _ = self.corrado_move_group.plan_cartesian_path(waypoints)
-        self.corrado_move_group.display_trajectory(plan)
+        #self.corrado_move_group.display_trajectory(plan)
         #self.corrado_move_group.execute_plan(plan)
         self.execute_plan(plan)
         
@@ -87,16 +86,20 @@ class CorradoTrajectoryController(object):
     def draw_x(self, cell_index):
         center3d = self.cell_centers3d[cell_index]
         waypoints = list()
+        extra_width = 0.007
 
-        wpose = self.corrado_move_group.move_group.get_current_pose().pose
-        start_position = Vector(wpose.position.x, wpose.position.y, wpose.position.z)
+        if cell_index >=0 and cell_index<=2:
+            alto_sx = center3d + Vector(-self.radius-extra_width, self.radius+extra_width, 0.0) 
+            alto_dx = center3d + Vector(self.radius+extra_width, self.radius+extra_width, 0.0)
+            basso_sx = center3d + Vector(-self.radius-extra_width, -self.radius+extra_width, 0.0)
+            basso_dx = center3d + Vector(self.radius+extra_width, -self.radius+extra_width, 0.0)
+        else:
+            alto_sx = center3d + Vector(-self.radius, self.radius, 0.0) 
+            alto_dx = center3d + Vector(self.radius, self.radius, 0.0)
+            basso_sx = center3d + Vector(-self.radius, -self.radius, 0.0)
+            basso_dx = center3d + Vector(self.radius, -self.radius, 0.0)
 
-        alto_sx = center3d + Vector(-self.radius, self.radius, 0.0) 
-        alto_dx = center3d + Vector(self.radius, self.radius, 0.0)
-        basso_sx = center3d + Vector(-self.radius, -self.radius, 0.0)
-        basso_dx = center3d + Vector(self.radius, -self.radius, 0.0)
-
-        self.add_waypoint(waypoints, [start_position])
+        self.add_waypoint(waypoints, [self.home_position])
 
         self.add_waypoint(waypoints, [alto_sx, self.up_trasl3d])
         self.add_waypoint(waypoints, [alto_sx])
@@ -108,10 +111,10 @@ class CorradoTrajectoryController(object):
         self.add_waypoint(waypoints, [basso_sx])
         self.add_waypoint(waypoints, [basso_sx, self.up_trasl3d])
 
-        self.add_waypoint(waypoints, [start_position])
+        self.add_waypoint(waypoints, [self.home_position])
 
         plan, _ = self.corrado_move_group.plan_cartesian_path(waypoints)
-        self.corrado_move_group.display_trajectory(plan)
+        #self.corrado_move_group.display_trajectory(plan)
         #self.corrado_move_group.execute_plan(plan)
         self.execute_plan(plan)
     
@@ -132,7 +135,7 @@ class CorradoTrajectoryController(object):
         self.add_waypoint(waypoints, [start_position])
 
         plan, _ = self.corrado_move_group.plan_cartesian_path(waypoints)
-        self.corrado_move_group.display_trajectory(plan)
+        #self.corrado_move_group.display_trajectory(plan)
         #self.corrado_move_group.execute_plan(plan)
         self.execute_plan(plan)
 

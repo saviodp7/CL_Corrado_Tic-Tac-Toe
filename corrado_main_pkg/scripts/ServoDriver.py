@@ -23,7 +23,7 @@ class ServoDriver(object):
         self.servo_list.append(servo.Servo(self.pca.channels[1],min_pulse=550,max_pulse=2600))
         self.servo_list.append(servo.Servo(self.pca.channels[2],min_pulse=600,max_pulse=2600))
         self.servo_list.append(servo.Servo(self.pca.channels[3],min_pulse=400,max_pulse=2400))
-        self.servo_list.append(servo.Servo(self.pca.channels[4],min_pulse=700,max_pulse=2850))
+        self.servo_list.append(servo.Servo(self.pca.channels[4],min_pulse=700,max_pulse=2750))
         self.servo_list.append(servo.Servo(self.pca.channels[5],min_pulse=520,max_pulse=2450))
         
 
@@ -38,4 +38,4 @@ class ServoDriver(object):
     def execute_trajectory(self, trajectory):
         for position in trajectory:
             self.write_position(position)
-            time.sleep(0.05)
+            time.sleep(0.04)

@@ -22,12 +22,12 @@ def main():
         rospy.logerr("Impossibile inizializzare camera!")
     cv2.namedWindow("frame", cv2.WINDOW_NORMAL)
     cv2.namedWindow("mask", cv2.WINDOW_NORMAL)
-    cv2.createTrackbar("threshold", "mask", 90, 255, lambda x: None)
+    cv2.createTrackbar("threshold", "mask", 108, 255, lambda x: None)
     cv2.createTrackbar("kernel_dim", "mask", 7, 15, lambda x: None)
 
     # Crea un'istanza della classe con il percorso dei pesi del modello
     current_path = os.path.dirname(__file__)
-    relative_path = 'weights.best.xo.hdf5'
+    relative_path = 'weights.best.xokA_good.hdf5'
     full_path = os.path.join(current_path, relative_path)
     letter_recog = LetterRecognition(full_path)
 
@@ -64,10 +64,11 @@ def main():
             for index, cell in enumerate(corners):
                 extracted_frame = grid_frame[cell[0][1]:cell[1][1], cell[0][0]:cell[1][0]]
                 (h, w) = extracted_frame.shape[:2]
+                extracted_frame = cv2.rotate(extracted_frame, cv2.ROTATE_90_CLOCKWISE)
                 if find_color(extracted_frame):
                     # Utilizza la classe per riconoscere le lettere
                     recognized_letter = letter_recog.recognize_letter(cv2.resize(extracted_frame,(32,32)))
-                    if recognized_letter == 'х':
+                    if recognized_letter == 'х' or recognized_letter == 'д' or recognized_letter == 'к':
                         config[index] = setting.X_SYM
                         cv2.line(display_frame, (setting.roi_x+cell[0][0]+10, setting.roi_y+cell[0][1]+10),
                                  (setting.roi_x+cell[1][0]-10, setting.roi_y+cell[1][1]+-10), (0, 0, 255), 2)
@@ -91,13 +92,16 @@ def main():
             acc_score += 1
             # Stampo la mossa migliore
             if acc_score > 5 and not solved:
-                solver.set_config(config)
-                best_move = solver.find_best_move()
-                solved = True
-                best_move_msg.header.stamp = rospy.Time.now()
-                best_move_msg.mossa = best_move
-                best_move_msg.score = acc_score
-                best_move_pub.publish(best_move_msg)
+                try:
+                    solver.set_config(config)
+                    best_move = solver.find_best_move()
+                    solved = True
+                    best_move_msg.header.stamp = rospy.Time.now()
+                    best_move_msg.mossa = best_move
+                    best_move_msg.score = acc_score
+                    best_move_pub.publish(best_move_msg)
+                except Exception:
+                    config = [0, 0, 0, 0, 0, 0, 0, 0, 0]
             if solved:
                 try:
                     cv2.line(display_frame, (
