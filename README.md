@@ -1,7 +1,7 @@
 # Corrado - The Tic-Tac-Toe Robot Player
 
 <div align="center">
-	<img src="https://github.com/saviodp7/Corrado_CL_ros/tree/main/images/move.gif">
+	<img src="https://github.com/saviodp7/CL_Corrado_Tic-Tac-Toe/blob/main/images/move.gif">
 </div>
 
 ## Abstract
@@ -10,17 +10,17 @@ This project involves creating an anthropomorphic robot with a spherical wrist d
 
 ## Introduction
 
-This project followed a V-cycle development policy, involving design, implementation, and testing phases to ensure direct feedback between design and physical implementation. The development included modeling in Simulink, simulation with MATLAB, and physical assembly with iterative testing using Arduino and later Raspberry Pi.
+This project followed a V-cycle development policy, involving design, implementation, and testing phases to ensure direct feedback between design and physical implementation. The development included modeling in Simulink, simulation with MATLAB, and physical assembly with iterative testing using Arduino Raspberry Pi.
 
 ## Model
 
+<p align="center">
+  <img src="images/corrado_simscape.jpg" alt="Simscape" width="600" />
+</p>
+
 ### Simscape Implementation
 
-The robot model was created in Simscape by importing CAD models and defining joints and servomotors. The Simscape model includes a servomotor block that takes desired angles and outputs actuation torques.
-
-### ROS Implementation
-
-The robot’s structure is described using URDF files in ROS, including links, joints, sensors, and other properties.
+The robot model was imported in Simscape by importing CAD models and defining joints and servomotors. The Simscape model includes a servomotor block that takes desired angles and outputs actuation torques.
 
 ## Inverse Kinematics
 
@@ -31,13 +31,13 @@ Three main inverse kinematics algorithms were explored:
 - **Jacobian Transpose**
 - **Second-order Algorithms**
 
-### Simulink Implementation
+### Simulink
 
 Inverse kinematics were implemented using MATLAB Function blocks in Simulink.
 
-### ROS Implementation
-
-Inverse kinematics in ROS were managed using MoveIt, which simplifies motion planning and kinematics handling.
+<div align="center">
+	<img src="https://github.com/saviodp7/CL_Corrado_Tic-Tac-Toe/blob/main/images/simulation.gif">
+</div>
 
 ## Trajectory Planner
 
@@ -49,6 +49,10 @@ Trajectory planning was initially done in MATLAB using key points and a trapezoi
 
 In ROS, trajectory planning was implemented in Python, defining home position, grid centering, and cell dimensions to draw 'X' on the grid.
 
+<p align="center">
+  <img src="images/rviz.jpg" alt="Rviz" width="600" />
+</p>
+
 ## Computer Vision
 
 ### Grid Extraction and Evaluation
@@ -58,6 +62,10 @@ The grid extraction function processes images to identify and sort the grid’s 
 ### Letter Recognition
 
 A Convolutional Neural Network (CNN) was used to recognize 'X' and 'O' letters from images. The training involved preparing datasets, defining the CNN architecture, and evaluating model performance.
+
+<p align="center">
+  <img src="images/grid.png" alt="Grid detection" width="600" />
+</p>
 
 ## AI Algorithms
 
@@ -73,7 +81,7 @@ ROS facilitates the integration of various components like hardware drivers and 
 
 ### MoveIt
 
-MoveIt is used for motion planning and collision detection, crucial for controlling the robotic arm’s movements.
+MoveIt is used for motion planning and IK solver crucial for controlling the robotic arm’s movements.
 
 ### RViz
 
@@ -83,12 +91,11 @@ RViz is used for visualization and debugging, providing a real-time view of the 
 
 ROS uses a node and topic-based communication system, allowing asynchronous information exchange between different components.
 
-### Corrado Project
-
-#### ROS-Raspberry-Pi Communication
-
-Communication with servomotors is established using a ServoDriver class on a Raspberry Pi with the PCA9685 driver.
-
 ## Conclusion
 
 This project integrates robotic control, AI, and computer vision to create a functional Tic-Tac-Toe player. The development process included modeling, simulation, physical assembly, and testing, culminating in a fully operational system.
+
+## Acknowledgements
+
+A special thanks to **[DIYRobotics](https://www.diyrobotics.org)** for the CAD model that we used as the starting point for our project. Their model was instrumental in the design phase, and we made significant modifications to create the final version of Corrado.
+
